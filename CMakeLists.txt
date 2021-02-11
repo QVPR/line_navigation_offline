@@ -31,7 +31,7 @@ project(LineNavigation)
     include_directories ( ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
     include_directories(".")
 
-find_package(OpenCV 4 REQUIRED)
+find_package(OpenCV 3 REQUIRED)
 
     include_directories(    SYSTEM
                             ${OpenCV_INCLUDE_DIRS}
@@ -88,7 +88,7 @@ endif()
 
 
 #find fortan libary (dependencies of ARPACK library)
-    FIND_LIBRARY(FORTRAN_LIBRARIES NAMES gfortran HINTS /usr/lib/gcc/x86_64-linux-gnu/9)
+    FIND_LIBRARY(FORTRAN_LIBRARIES NAMES gfortran HINTS /usr/lib/gcc/x86_64-linux-gnu/5)
 
 
     include_directories(linenav/arpack++/include)
