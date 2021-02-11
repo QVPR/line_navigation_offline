@@ -11,27 +11,43 @@ your own risk. The authors are not responsible or liable for any damages incurre
 
 ### 1. Get Source codes from the repository 
    
-   $ git clone <reopo url>
-	
-### 2. Build executables required for mapping.
- 
-  $ cd line_navigation_offline/selectKeyImagesLines  
-  $ ./build_linematching.sh
+```
+git clone <reopo url>
+cd line_navigation_offline
+git submodule update --init selectKeyImagesLines
+```
 
+### 2. Install required dependencies
+
+```
+sudo apt install libarpack2-dev libsuperlu-dev
+```
 	
-### 3. Build Navigation code
+### 3. Build executables required for mapping.
+
+``` 
+cd selectKeyImagesLines  
+./build_linematching.sh
+```
+
+### 4. Build Navigation code
     
-   For first time use setup.sh to compile the code. This will build custom ARPACK and SUPELU libaries
-   $ cd line_navigation_offline 
-   $ ./setup.sh 
-   
-   After initial setup, the further compilation can be done by  
-   $ ./compile.sh 
-	
+For first time use setup.sh to compile the code. This will build custom ARPACK and SUPELU libaries
 
-### 4. Steps to run naviagtion code after building
+```
+cd ..
+./setup.sh 
+```
+
+After initial setup, the further compilation can be done by  
+
+```
+./compile.sh
+```
+
+### 5. Steps to run naviagtion code after building
      a) Get Reference images from teach sequence. (Refer https://github.com/suuman/selectKeyImagesLines)
-     b) Test Script to run code $run.sh
+     b) Test Script to run code `run.sh`
         
       
 
