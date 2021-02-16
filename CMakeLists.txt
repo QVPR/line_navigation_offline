@@ -2,7 +2,24 @@
 # Suman Raj Bista
 
 cmake_minimum_required( VERSION 3.0.0)
-project(LineNavigation)
+project(line_navigation_ros)
+
+find_package(catkin REQUIRED COMPONENTS
+	# rospy
+	# geometry_msgs
+	# nav_msgs
+	# sensor_msgs
+	# std_msgs
+	# std_srvs
+	cv_bridge
+)
+
+catkin_package(
+# 	INCLUDE_DIRS include
+# 	LIBRARIES miro_teach_repeat
+	# CATKIN_DEPENDS message_runtime
+# 	DEPENDS system_lib
+)
 
 ## Libary Paths
     #set(CMAKE_PREFIX_PATH
