@@ -14,10 +14,10 @@ your own risk. The authors are not responsible or liable for any damages incurre
 
 ### 3. Build package with catkin
 
-### 4. Run with ROS
+### 4. Run with ROS (edit launch file parameters if required)
 
 ```bash
-rosrun line_navigation_ros navigation_offline src/line_navigation_offline/data/offlinetest/kfls src/line_navigation_offline/data/offlinetest/imgs
+roslaunch line_navigation_ros nav_online.launch
 ```
 
 ## Build Instructions

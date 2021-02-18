@@ -5,19 +5,17 @@ cmake_minimum_required( VERSION 3.0.0)
 project(line_navigation_ros)
 
 find_package(catkin REQUIRED COMPONENTS
-	# rospy
-	# geometry_msgs
-	# nav_msgs
-	# sensor_msgs
-	# std_msgs
-	# std_srvs
+	roscpp
 	cv_bridge
+    sensor_msgs
+    geometry_msgs
+    image_transport
 )
 
 catkin_package(
 # 	INCLUDE_DIRS include
 # 	LIBRARIES miro_teach_repeat
-	# CATKIN_DEPENDS message_runtime
+#   CATKIN_DEPENDS message_runtime
 # 	DEPENDS system_lib
 )
 
@@ -173,6 +171,7 @@ set(SRCS  navmain/nav_lineoffline.cpp   )
 
 
 include_directories(navmain)
+include_directories(${catkin_INCLUDE_DIRS})
 
 
 set(extraLIBS ${ARLPSLU_LIBRARIES} ${FORTRAN_LIBRARIES})
@@ -182,3 +181,6 @@ message("${extraLIBS}")
 add_executable (navigation_offline ${SRCS} ${SOURCES} ${HEADERS} )
 target_link_libraries (navigation_offline ${extraLIBS} ${OpenCV_LIBS})
 
+add_executable (navigation_online navmain/nav_online.cpp ${SOURCES} ${HEADERS} )
+include_directories(${catkin_INCLUDE_DIRS})
+target_link_libraries (navigation_online ${extraLIBS} ${OpenCV_LIBS} ${catkin_LIBRARIES})

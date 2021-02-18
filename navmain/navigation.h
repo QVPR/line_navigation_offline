@@ -62,7 +62,10 @@ bool useobsavoid;
 
 public:
     ofstream velfile, featfile, jacfile, errfile;
-/**
+
+    navigation();
+
+    /**
      * @brief navigation
      * @param d pointer to display
      * @param Kc intrinsic matrix of RGB camera

@@ -50,24 +50,11 @@
 	<!--   <doc_depend>doxygen</doc_depend> -->
 	<buildtool_depend>catkin</buildtool_depend>
 
-	<!-- <depend>rospy</depend> -->
-	<!-- <depend>geometry_msgs</depend> -->
-	<!-- <depend>nav_msgs</depend> -->
-	<depend>sensor_msgs</depend>
+	<depend>roscpp</depend>
 	<depend>cv_bridge</depend>
-	<!-- <depend>python-numpy</depend>
-	<depend>std_msgs</depend>
-	<depend>std_srvs</depend> -->
-
-	<!-- <build_depend>message_generation</build_depend> -->
-
-	<!-- <exec_depend>message_runtime</exec_depend>
-	<exec_depend>tf_conversions</exec_depend>
-	<exec_depend>python-yaml</exec_depend>
-	<exec_depend>python-scipy</exec_depend>
-	<exec_depend>image_geometry</exec_depend>
-	<exec_depend>rospy_message_converter</exec_depend> -->
-
+	<depend>sensor_msgs</depend>
+	<depend>geometry_msgs</depend>
+	<depend>image_transport</depend>
 
 	<!-- The export tag contains other, unspecified, tags -->
 	<export>

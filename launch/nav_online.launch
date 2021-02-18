@@ -1,0 +1,23 @@
+<launch>
+	<!-- Global params -->
+	<arg name="teach_dir" value="/home/dominic/line_navigation_offline/data/offlinetest/kfls" />
+
+	<!-- Load image files for matching -->
+	<node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen" >
+		<rosparam param="base_forward_velocity">0.35</rosparam>
+		<rosparam param="max_turning_speed">0.93</rosparam>
+		<rosparam param="turning_slow_factor">0.3</rosparam>
+		<rosparam param="turning_threshold">0.3</rosparam>
+		<!-- random camera matrix values - needed for jacobian to go from image -> real world coords -->
+		<rosparam param="K11">296.3437428191</rosparam> 
+		<rosparam param="K13">158.2733787287</rosparam>
+		<rosparam param="K22">296.6441607237</rosparam>
+		<rosparam param="K23">118.0622191474</rosparam>
+
+		<rosparam param="image_width">320</rosparam>
+		<rosparam param="image_height">240</rosparam>
+
+		<remap from="image" to="ros_indigosdk_occam/image0" />
+        <remap from="cmd_vel" to="jackal_velocity_controller/cmd_vel" />
+	</node>
+</launch>

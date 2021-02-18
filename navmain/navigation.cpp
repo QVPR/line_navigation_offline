@@ -19,6 +19,11 @@
 
 #include "navigation.h"
 
+navigation::navigation()
+{
+
+}
+
 navigation::navigation(dispNav *d, cv::Mat &Kc)
 {
     ln.setDisplay(d);
@@ -87,7 +92,7 @@ int navigation::SwitchtoNewKeyImages(kimRead &kf)
     rvL  = ln.getRotVel(lne,lnj);
     nl = ln.linesno;
     fetno = nl;
-    if(fabs(rvL)>0.3) rvL = rvL/fabs(rvL) *0.3;
+    if(fabs(rvL)>0.3) rvL = rvL/fabs(rvL) * 0.3;
 
     rvL2 = ln.getRotVel2(lne2,lnj2);
     nl2 = ln.linesno;
