@@ -94,8 +94,8 @@ void dispNav::dispImages(std::string title, cv::Mat &IP,cv::Mat &IC,cv::Mat &IN,
      w = 2;
 
 
-     size = 320;
-     sz = 240;
+     size = IC.size().width;
+     sz = IC.size().height;
 
      int wdh= 0;
      int offsets = 0;
@@ -167,8 +167,8 @@ void dispNav::dispImages(std::string title, cv::Mat &IP,cv::Mat &IC,cv::Mat &IN,
      h = 3;//2;
      w = 2;
 
-     size = 320;
-     sz = 240;
+     size = IC.size().width;
+     sz = IC.size().height;
 
      int wdh= 0;
      int offsets = 0;
@@ -218,7 +218,7 @@ void dispNav::dispImages(std::string title, cv::Mat &IP,cv::Mat &IC,cv::Mat &IN,
 
       }
 
-
+      
 
 
      m = size; //0;

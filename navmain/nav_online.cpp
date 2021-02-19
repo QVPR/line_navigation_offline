@@ -1,22 +1,3 @@
-
-#include <math.h>
-#include <time.h>
-#include <fstream>
-#include <opencv2/opencv.hpp>
-#include <string>
-#include <sstream>
-#include <opencv2/imgproc/imgproc_c.h>
-#include <iostream>
-//#include <QString>
-//#include <QDir>
-//#include <QStringList>
-#include <algorithm>
-
-
-//#include <ariac.h>
-
-
-#include <ctime>
 #include "linenav/kimread.h"
 #include "navigation.h"
 #include "linenav/dispnav.h"
@@ -28,8 +9,6 @@
 #include "geometry_msgs/Twist.h"
 #include "cv_bridge/cv_bridge.h"
 #include "image_transport/image_transport.h"
-
-using namespace std;
 
 ros::Publisher twistPub;
 
@@ -43,6 +22,7 @@ double turning_slow_factor;
 double turning_threshold;
 
 bool initialised = false;
+int image_count = 0;
 
 cv::Size image_size;
 
@@ -67,13 +47,21 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg){
 		return;
 	}
 
-	std::cout << "stepping" << std::endl;
 	int flag = nav.step(image);
 
-	if (flag < 0){
+	if (flag == 0){
+		image_count = 0;
+	}
+	else if (flag == 1){
+		image_count++;
+	}
+	else if (flag < 0){
 		// stop!
 		geometry_msgs::Twist cmd_vel = geometry_msgs::Twist();
 		twistPub.publish(cmd_vel);
+	}
+	else{
+		return;
 	}
 
 	float v, w;
@@ -81,12 +69,17 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg){
 	w = nav.getRotVel(); // code inside here returns a max turning speed of 0.3
 	w *= max_turning_speed / 0.3;
 
-	std::cout<<"Rot Vel = "<<w<<std::endl;
-
 	if(fabs(w) > turning_threshold) 
 		v = base_forward_velocity*turning_slow_factor;
 	else 
 		v = base_forward_velocity;
+
+	if(image_count > 2){
+		int islast = nav.SwitchtoNewKeyImages(teachRunImages);
+		if(islast){
+			std::cout<<"end of topological navigation"<<std::endl;
+		}
+	}
 
 	geometry_msgs::Twist cmd_vel = geometry_msgs::Twist();
 	cmd_vel.linear.x = v;
@@ -98,7 +91,7 @@ int main(int argc, char** argv)
 {
 	std::cout << "starting" << std::endl;
 	ros::init(argc, argv, "line_navigation");
-	ros::NodeHandle n;
+	ros::NodeHandle n("~");
 	// couldn't get image transport to work properly
 	// image_transport::ImageTransport it(n);
 	// image_transport::Subscriber imageSub = it.subscribe("image", 1, imageCallback);
