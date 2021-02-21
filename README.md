@@ -14,7 +14,9 @@ your own risk. The authors are not responsible or liable for any damages incurre
 
 ### 3. Build package with catkin
 
-### 4. Run with ROS (edit launch file parameters if required)
+
+### 4. Run selectRefImages on the collected dataset
+### 5. Run with ROS (edit launch file parameters if required)
 
 ```bash
 roslaunch line_navigation_ros nav_online.launch
