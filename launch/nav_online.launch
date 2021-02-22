@@ -19,6 +19,5 @@
 		<rosparam param="image_height">480</rosparam>
 
 		<remap from="navigation_online/image" to="ros_indigosdk_occam/image0" />
-        <remap from="cmd_vel" to="jackal_velocity_controller/cmd_vel" />
 	</node>
 </launch>
