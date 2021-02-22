@@ -25,14 +25,14 @@ catkin_package(
     #        /home/suman/soft/third_party/naoqi/install/share/naoqi_libqicore/cmake
     #   )
 
-    set(CMAKE_AUTOMOC ON)
-    set(CMAKE_AUTOUIC ON)
+    # set(CMAKE_AUTOMOC ON)
+    # set(CMAKE_AUTOUIC ON)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
     set (CMAKE_BUILD_TYPE  RelWithDebInfo )
 
     option(USE_BIAS_LIBRARY "Use BIAS library for line matching if not OpenCV version is used" ON)
-    option(USE_SYSTEM_ARPAK_SUPERLU "Use system Arpac, lapack, blas and superlu" OFF)
+    option(USE_SYSTEM_ARPAK_SUPERLU "Use system Arpac, lapack, blas and superlu" ON)
 
     # Custom BIAS library
     if(USE_BIAS_LIBRARY)
@@ -103,7 +103,7 @@ endif()
 
 
 #find fortan libary (dependencies of ARPACK library)
-    FIND_LIBRARY(FORTRAN_LIBRARIES NAMES gfortran HINTS /usr/lib/gcc/x86_64-linux-gnu/5)
+    FIND_LIBRARY(FORTRAN_LIBRARIES NAMES gfortran HINTS /usr/lib/gcc/x86_64-linux-gnu/5 /usr/lib/gcc/x86_64-linux-gnu/8 /usr/lib/gcc/x86_64-linux-gnu/7)
 
 
     include_directories(linenav/arpack++/include)

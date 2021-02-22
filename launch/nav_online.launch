@@ -10,10 +10,10 @@
 		<rosparam param="turning_slow_factor">0.3</rosparam>
 		<rosparam param="turning_threshold">0.3</rosparam>
 		<!-- random camera matrix values - needed for jacobian to go from image -> real world coords -->
-		<rosparam param="K11">700</rosparam> 
-		<rosparam param="K13">376</rosparam>
-		<rosparam param="K22">700</rosparam>
-		<rosparam param="K23">240</rosparam>
+		<rosparam param="K11">487.6</rosparam> 
+		<rosparam param="K13">346.1</rosparam>
+		<rosparam param="K22">486.6</rosparam>
+		<rosparam param="K23">220.0</rosparam>
 
 		<rosparam param="image_width">752</rosparam>
 		<rosparam param="image_height">480</rosparam>
