@@ -1,10 +1,10 @@
 <launch>
 	<!-- Global params -->
-	<arg name="teach_dir" value="/home/dominic/linenav_officetest/ref_imgs" />
+	<arg name="teach_dir" default="/home/dominic/linenav_officetest/ref_imgs" />
 
 	<!-- Load image files for matching -->
 	<!-- node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen" launch-prefix="gdb -ex run -args" -->
-	<node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen">
+	<node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen" launch-prefix="gdb -ex run -args">
 		<rosparam param="base_forward_velocity">0.35</rosparam>
 		<rosparam param="max_turning_speed">0.93</rosparam>
 		<rosparam param="turning_slow_factor">0.3</rosparam>
@@ -19,6 +19,10 @@
 		<rosparam param="image_height">480</rosparam>
 		<rosparam param="image_ratio">1</rosparam>
 
-		<remap from="navigation_online/image" to="ros_indigosdk_occam/image0" />
+		<rosparam param="display_image">false</rosparam>
+
+		<remap from="navigation_online/image/compressed" to="ros_indigosdk_occam/image0/compressed" />
+		<remap from="navigation_online/cmd_vel" to="cmd_vel" />
+        <param name="image_transport" value="compressed"/>
 	</node>
 </launch>

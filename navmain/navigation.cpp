@@ -30,8 +30,6 @@ navigation::navigation(dispNav *d, cv::Mat &Kc)
     ln.setK(Kc);
     K = Kc.clone();
 
-
-
     lne.reserve(4);
     lnj.reserve(4);
     lne2.reserve(4);

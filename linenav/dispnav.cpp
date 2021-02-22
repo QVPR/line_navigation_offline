@@ -17,402 +17,379 @@
  * Author: Suman Raj Bista
  */
 
-
 #include "dispnav.h"
 
 #include <iostream>
 
-
 dispNav::dispNav()
 {
-    waittime = 1;
+  waittime = 1;
   // cl.reserve(3);
-    showdisp = true;
-    savedispimg = true;
-    featflag = true;
+  showdisp = true;
+  savedispimg = true;
+  featflag = true;
 
-
-    count = 0;
-   // displaymode = 0;
+  count = 0;
+  // displaymode = 0;
 }
 
-void dispNav::setDisptime(int delay){
-      waittime = delay;
+void dispNav::setDisptime(int delay)
+{
+  waittime = delay;
 }
 
-
-
-void dispNav::showfeat(bool flag){
-    featflag = flag;
+void dispNav::showfeat(bool flag)
+{
+  featflag = flag;
 }
 
-void dispNav::displayimage(bool flag){
-    showdisp = flag;
-
+void dispNav::displayimage(bool flag)
+{
+  showdisp = flag;
 }
 
-void dispNav::saveimage(bool flag){
-     savedispimg = flag;
+void dispNav::saveimage(bool flag)
+{
+  savedispimg = flag;
 }
 
-void dispNav::setKeyImages(std::string pkim,std::string nkim,std::string nnkim)
+void dispNav::setKeyImages(std::string pkim, std::string nkim, std::string nnkim)
 {
 
-    Ip = cv::imread(pkim);
-    In = cv::imread(nkim);
-    Inn = cv::imread(nnkim);
-
+  Ip = cv::imread(pkim);
+  In = cv::imread(nkim);
+  Inn = cv::imread(nnkim);
 }
 
-
-void dispNav::dispNavigation(cv::Mat &Ic,ScaleLines &cLines,ScaleLines &nLines,ScaleLines &nnLines,std::vector< std::vector< int> > &op)
+void dispNav::dispNavigation(cv::Mat &Ic, ScaleLines &cLines, ScaleLines &nLines, ScaleLines &nnLines, std::vector<std::vector<int>> &op)
 {
-   if(featflag)
-      dispImages("Navigation",Ip,Ic,In,Inn,cLines,nLines,nnLines,op);
-   else
-      dispImages("Navigation",Ip,Ic,In,Inn);
-
+  if (featflag)
+    dispImages("Navigation", Ip, Ic, In, Inn, cLines, nLines, nnLines, op);
+  else
+    dispImages("Navigation", Ip, Ic, In, Inn);
 }
-
-
-
 
 void dispNav::dispNavigation(cv::Mat &Ic)
 {
-    dispImages("Navigation",Ip,Ic,In,Inn);
+  dispImages("Navigation", Ip, Ic, In, Inn);
 }
 
+void dispNav::dispImages(std::string title, cv::Mat &IP, cv::Mat &IC, cv::Mat &IN, cv::Mat &INN)
+{
 
-void dispNav::dispImages(std::string title, cv::Mat &IP,cv::Mat &IC,cv::Mat &IN,cv::Mat &INN) {
+  int size, sz;
+  int m, n;
+  int w, h;
 
-     int size,sz;
-     int m,n;
-     int w, h;
+  h = 3; //2;
+  w = 2;
 
+  size = IC.size().width;
+  sz = IC.size().height;
 
-     h = 3;//2;
-     w = 2;
+  int wdh = 0;
+  int offsets = 0;
 
+  cv::Mat DispImage(cv::Size(size * w, int(sz * h + wdh * h) + offsets), CV_8UC3, cv::Scalar(0, 0, 0));
+  cv::Mat temp;
 
-     size = IC.size().width;
-     sz = IC.size().height;
+  cv::cvtColor(IC, Ia, cv::COLOR_GRAY2BGR);
 
-     int wdh= 0;
-     int offsets = 0;
+  INt = IN.clone();
+  INNt = INN.clone();
 
-     cv::Mat DispImage(cv::Size(size*w,int(sz*h+wdh*h)+offsets),CV_8UC3,cv::Scalar(0,0,0));
-     cv::Mat temp;
+  IPt = IP.clone();
 
-     cv::cvtColor(IC,Ia,cv::COLOR_GRAY2BGR);
+  m = size; //0;
+  n = wdh + offsets / 2;
+  //cv::resize(IPt,temp,cv::Size(size,sz));
+  IPt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-     INt = IN.clone();
-     INNt = INN.clone();
+  m = 0;                          //size;
+  n = sz + wdh * 2 + offsets / 2; //wdh+offsets/2;
+                                  // cv::resize(IC,temp,cv::Size(size,sz));
+  Ia.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-     IPt = IP.clone();
+  m = size; //0;
+  n = sz + wdh * 2 + offsets / 2;
+  cv::resize(INt, temp, cv::Size(size, sz));
+  INt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
+  m = size;
+  n = 2 * sz + wdh * 2 + offsets / 2; //sz+wdh*2+offsets/2;
+  cv::resize(INNt, temp, cv::Size(size, sz));
+  INNt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-     m = size; //0;
-     n = wdh+offsets/2;
-    //cv::resize(IPt,temp,cv::Size(size,sz));
-     IPt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
+  cv::putText(DispImage, "Reference Images (Right)", cv::Point(10, 10), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(200, 200, 250), 1, cv::LINE_AA);
+  temp.release();
 
-     m = 0; //size;
-      n=sz+wdh*2+offsets/2; //wdh+offsets/2;
-    // cv::resize(IC,temp,cv::Size(size,sz));
-     Ia.copyTo(DispImage(cv::Rect(m, n, size, sz)));
+  if (showdisp)
+  {
+    cv::namedWindow(title);
+    cv::imshow(title, DispImage);
+    cv::waitKey(waittime);
+  }
 
-     m = size; //0;
-     n=sz+wdh*2+offsets/2;
-     cv::resize(INt,temp,cv::Size(size,sz));
-     INt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
+  std::stringstream aa;
+  if (count < 10)
+    aa << "img000" << count << ".png";
+  else if (count < 100)
+    aa << "img00" << count << ".png";
+  else if (count < 1000)
+    aa << "img0" << count << ".png";
+  else
+    aa << "img" << count << ".png";
 
-     m =size;
-     n= 2*sz+wdh*2+offsets/2;//sz+wdh*2+offsets/2;
-     cv::resize(INNt,temp,cv::Size(size,sz));
-     INNt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
-
-     cv::putText(DispImage, "Reference Images (Right)", cv::Point(10,10), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(200,200,250), 1, cv::LINE_AA);
-     temp.release();
-
-   if(showdisp){
-      cv::namedWindow( title);
-      cv::imshow( title,DispImage);
-      cv::waitKey(waittime);
-      }
-
-   std::stringstream aa;
- if(count<10)
-   aa<<"img000"<<count<<".png";
- else if (count<100)
-      aa<<"img00"<<count<<".png";
- else if (count<1000)
-         aa<<"img0"<<count<<".png";
- else
-     aa<<"img"<<count<<".png";
-
- if(savedispimg)
-     cv::imwrite(aa.str().c_str(),DispImage);
- count++;
-
+  if (savedispimg)
+    cv::imwrite(aa.str().c_str(), DispImage);
+  count++;
 }
 
+void dispNav::dispImages(std::string title, cv::Mat &IP, cv::Mat &IC, cv::Mat &IN, cv::Mat &INN, ScaleLines &cLines, ScaleLines &nLines, ScaleLines &nnLines, std::vector<std::vector<int>> &op)
+{
 
+  int size, sz;
+  int m, n;
+  int w, h;
 
-void dispNav::dispImages(std::string title, cv::Mat &IP,cv::Mat &IC,cv::Mat &IN,cv::Mat &INN,ScaleLines &cLines,ScaleLines &nLines,ScaleLines &nnLines,std::vector< std::vector< int> > &op) {
+  h = 3; //2;
+  w = 2;
 
-     int size,sz;
-     int m,n;
-     int w, h;
+  size = IC.size().width;
+  sz = IC.size().height;
 
-     h = 3;//2;
-     w = 2;
+  int wdh = 0;
+  int offsets = 0;
 
-     size = IC.size().width;
-     sz = IC.size().height;
+  cv::Mat DispImage(cv::Size(size * w, int(sz * h + wdh * h) + offsets), CV_8UC3, cv::Scalar(0, 0, 0));
+  cv::Mat temp;
 
-     int wdh= 0;
-     int offsets = 0;
+  cv::cvtColor(IC, Ia, cv::COLOR_GRAY2BGR);
 
-     cv::Mat DispImage(cv::Size(size*w,int(sz*h+wdh*h)+offsets),CV_8UC3,cv::Scalar(0,0,0));
-     cv::Mat temp;
+  INt = IN.clone();
+  INNt = INN.clone();
 
-     cv::cvtColor(IC,Ia,cv::COLOR_GRAY2BGR);
+  IPt = IP.clone();
 
-     INt = IN.clone();
-     INNt = INN.clone();
+  int r, g, b, ln;
+  int nmatch = op.size() / 2;
+  int lineID;
 
-     IPt = IP.clone();
+  // std::cout<<pcol;
 
+  for (int pair = 0; pair < nmatch; pair++)
+  {
 
-     int r,g,b,ln;
-     int nmatch = op.size()/2;
-     int lineID;
+    ln = op[pair][1];
 
-     // std::cout<<pcol;
+    r = pcol[ln][0];
+    g = pcol[ln][1];
+    b = pcol[ln][2];
 
-      for(int pair=0; pair<nmatch;pair++){
+    lineID = op[pair][0];
+    cv::line(Ia, cv::Point(int(cLines[lineID][0].startPointX), int(cLines[lineID][0].startPointY)), cv::Point(int(cLines[lineID][0].endPointX), int(cLines[lineID][0].endPointY)),
+             CV_RGB(r, g, b), 2, cv::LINE_AA);
 
-         ln =op[pair][1];
+    lineID = op[pair][1];
+    cv::line(INt, cv::Point(int(nLines[lineID][0].startPointX), int(nLines[lineID][0].startPointY)),
+             cv::Point(int(nLines[lineID][0].endPointX), int(nLines[lineID][0].endPointY)),
+             CV_RGB(r, g, b), 2, cv::LINE_AA);
 
-         r = pcol[ln][0];
-         g = pcol[ln][1];
-         b = pcol[ln][2];
+    lineID = op[pair][2];
 
-          lineID= op[pair][0];
-          cv::line(Ia,cv::Point(int(cLines[lineID][0].startPointX),int(cLines[lineID][0].startPointY))
-                      ,cv::Point(int(cLines[lineID][0].endPointX),int(cLines[lineID][0].endPointY)),
-                       CV_RGB(r,g,b),2,cv::LINE_AA);
+    cv::line(INNt, cv::Point(int(nnLines[lineID][0].startPointX), int(nnLines[lineID][0].startPointY)),
+             cv::Point(int(nnLines[lineID][0].endPointX), int(nnLines[lineID][0].endPointY)),
+             CV_RGB(r, g, b), 2, cv::LINE_AA);
+  }
 
-          lineID= op[pair][1];
-          cv::line(INt,cv::Point(int(nLines[lineID][0].startPointX),int(nLines[lineID][0].startPointY)),
-                    cv::Point(int(nLines[lineID][0].endPointX), int(nLines[lineID][0].endPointY)),
-                     CV_RGB(r,g,b),2, cv::LINE_AA);
+  m = size; //0;
+  n = wdh + offsets / 2;
+  //cv::resize(IP,temp,cv::Size(size,sz));
+  IPt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-          lineID= op[pair][2];
+  m = 0;                              //size;
+  n = n = sz + wdh * 2 + offsets / 2; //wdh+offsets/2;
+  //cv::resize(Ia,temp,cv::Size(size,sz));
+  Ia.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-          cv::line(INNt,cv::Point(int(nnLines[lineID][0].startPointX),int(nnLines[lineID][0].startPointY)),
-                    cv::Point(int(nnLines[lineID][0].endPointX), int(nnLines[lineID][0].endPointY)),
-                     CV_RGB(r,g,b),2, cv::LINE_AA);
+  m = size; //0;
+  n = sz + wdh * 2 + offsets / 2;
+  // cv::resize(INt,temp,cv::Size(size,sz));
+  INt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
+  m = size;
+  n = 2 * sz + wdh * 2 + offsets / 2; //sz+wdh*2+offsets/2;
+  //cv::resize(INNt,temp,cv::Size(size,sz));
+  INNt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
+  cv::putText(DispImage, "Reference Images (Right)", cv::Point(20, 50), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(200, 200, 250), 1, cv::LINE_AA);
+  cv::putText(DispImage, "Current Image", cv::Point(20, 510), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(250, 200, 250), 1, cv::LINE_AA);
 
-      }
+  //temp.release();
+  if (showdisp)
+  {
 
-      
+    cv::imshow(title, DispImage);
 
+    cv::waitKey(waittime);
+  }
 
-     m = size; //0;
-     n = wdh+offsets/2;
-     //cv::resize(IP,temp,cv::Size(size,sz));
-     IPt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
+  std::stringstream aa;
+  if (count < 10)
+    aa << "img000" << count << ".png";
+  else if (count < 100)
+    aa << "img00" << count << ".png";
+  else if (count < 1000)
+    aa << "img0" << count << ".png";
+  else
+    aa << "img" << count << ".png";
 
-     m = 0; //size; 
-     n =   n=sz+wdh*2+offsets/2; //wdh+offsets/2;
-     //cv::resize(Ia,temp,cv::Size(size,sz));
-     Ia.copyTo(DispImage(cv::Rect(m, n, size, sz)));
-
-     m = size; //0;
-     n=sz+wdh*2+offsets/2;
-    // cv::resize(INt,temp,cv::Size(size,sz));
-    INt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
-
-     m =size; 
-     n= 2*sz+wdh*2+offsets/2;//sz+wdh*2+offsets/2;
-     //cv::resize(INNt,temp,cv::Size(size,sz));
-     INNt.copyTo(DispImage(cv::Rect(m, n, size, sz)));
-
-     cv::putText(DispImage, "Reference Images (Right)", cv::Point(20,50), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(200,200,250), 1, cv::LINE_AA);
-     cv::putText(DispImage, "Current Image", cv::Point(20,510), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(250,200,250), 1, cv::LINE_AA);
-
-     //temp.release();
-   if(showdisp){
-
-       cv::imshow( title,DispImage);
-
-      cv::waitKey(waittime);
-   }
-    
-     std::stringstream aa;
-   if(count<10)
-     aa<<"img000"<<count<<".png";
-   else if (count<100)
-        aa<<"img00"<<count<<".png";
-   else if (count<1000)
-           aa<<"img0"<<count<<".png";
-   else
-       aa<<"img"<<count<<".png";
-
-   if(savedispimg)
-       cv::imwrite(aa.str().c_str(),DispImage);
-   count++;
+  if (savedispimg)
+    cv::imwrite(aa.str().c_str(), DispImage);
+  count++;
 }
 
+void dispNav::dispImages(std::string title, cv::Mat &I1, cv::Mat &I2)
+{
 
+  int size, sz;
+  int m, n;
+  int w, h;
 
-void dispNav::dispImages(std::string title, cv::Mat &I1,cv::Mat &I2) {
+  h = 1;
+  w = 2;
 
-     int size,sz;
-     int m,n;
-     int w, h;
+  size = 320;
+  sz = 240;
 
-     h =1; w=2;
+  int wdh = 0;
+  int offsets = 0;
 
-     size = 320;
-     sz = 240;
+  cv::Mat DispImage(cv::Size(size * w, int(sz * h + wdh * h) + offsets), CV_8U);
+  cv::Mat temp;
 
-     int wdh= 0;
-     int offsets = 0;
+  m = 0;
+  n = wdh + offsets / 2;
+  cv::resize(I1, temp, cv::Size(size, sz));
+  temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-     cv::Mat DispImage(cv::Size(size*w,int(sz*h+wdh*h)+offsets),CV_8U);
-     cv::Mat temp;
+  m = size;
+  wdh + offsets / 2;
+  cv::resize(I2, temp, cv::Size(size, sz));
+  temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-     m= 0; n=wdh+offsets/2;
-     cv::resize(I1,temp,cv::Size(size,sz));
-     temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
+  temp.release();
 
-     m = size; wdh+offsets/2;
-     cv::resize(I2,temp,cv::Size(size,sz));
-     temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
+  if (showdisp)
+  {
 
-     temp.release();
+    cv::namedWindow(title);
+    cv::imshow(title, DispImage);
 
-     if(showdisp){
-
-    cv::namedWindow( title);
-    cv::imshow( title,DispImage);
-
-  cv::waitKey(waittime);
+    cv::waitKey(waittime);
   }
 }
 
+void dispNav::dispImages(std::string title, cv::Mat &IC, ScaleLines linesInLeft, cv::Mat &IK, ScaleLines linesInRight, std::vector<unsigned int> matchResult)
+{
 
+  int size, sz;
+  int m, n;
+  int w, h;
 
+  h = 1;
+  w = 2;
 
+  size = 320;
+  sz = 240;
 
-void dispNav::dispImages(std::string title, cv::Mat &IC,ScaleLines linesInLeft,cv::Mat &IK,ScaleLines linesInRight,std::vector<unsigned int> matchResult) {
+  int wdh = 0;
+  int offsets = 0;
 
+  cv::cvtColor(IC, Ia, cv::COLOR_GRAY2BGR);
 
-     int size,sz;
-     int m,n;
-     int w, h;
+  cv::Mat DispImage(cv::Size(size * w, int(sz * h + wdh * h) + offsets), CV_8UC3);
 
-     h =1; w=2;
+  int r, g, b;
+  int nmatch = matchResult.size() / 2;
+  int lineIDLeft;
+  int lineIDRight;
 
-     size = 320;
-     sz = 240;
+  for (int pair = 0; pair < nmatch; pair++)
+  {
+    r = int(rand() % 256);
+    g = int(rand() % 256);
+    b = 255 - r;
 
-     int wdh= 0;
-     int offsets = 0;
+    lineIDLeft = matchResult[2 * pair];
+    lineIDRight = matchResult[2 * pair + 1];
 
-     cv::cvtColor(IC,Ia,cv::COLOR_GRAY2BGR);
+    cv::line(Ia, cv::Point(int(linesInLeft[lineIDLeft][0].startPointX), int(linesInLeft[lineIDLeft][0].startPointY)), cv::Point(int(linesInLeft[lineIDLeft][0].endPointX), int(linesInLeft[lineIDLeft][0].endPointY)),
+             CV_RGB(r, g, b), 2, cv::LINE_AA);
 
+    cv::line(IK, cv::Point(int(linesInRight[lineIDRight][0].startPointX), int(linesInRight[lineIDRight][0].startPointY)),
+             cv::Point(int(linesInRight[lineIDRight][0].endPointX), int(linesInRight[lineIDRight][0].endPointY)),
+             CV_RGB(r, g, b), 2, cv::LINE_AA);
+  }
 
-     cv::Mat DispImage(cv::Size(size*w,int(sz*h+wdh*h)+offsets),CV_8UC3);
+  cv::Mat temp;
 
-    int r,g,b;
-    int nmatch = matchResult.size()/2;
-    int lineIDLeft;
-    int lineIDRight;
+  m = 0;
+  n = wdh + offsets / 2;
+  cv::resize(Ia, temp, cv::Size(size, sz));
+  temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
+  m = size;
+  n = wdh + offsets / 2;
+  cv::resize(IK, temp, cv::Size(size, sz));
+  temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
 
-     for(int pair=0; pair<nmatch;pair++){
-         r = int(rand()%256);
-         g = int(rand()%256);
-         b = 255 - r;
+  temp.release();
 
-         lineIDLeft = matchResult[2*pair];
-         lineIDRight= matchResult[2*pair+1];
-
-         cv::line(Ia,cv::Point(int(linesInLeft[lineIDLeft][0].startPointX),int(linesInLeft[lineIDLeft][0].startPointY))
-                     ,cv::Point(int(linesInLeft[lineIDLeft][0].endPointX),int(linesInLeft[lineIDLeft][0].endPointY)),
-                      CV_RGB(r,g,b),2,cv::LINE_AA);
-
-         cv::line(IK,cv::Point(int(linesInRight[lineIDRight][0].startPointX),int(linesInRight[lineIDRight][0].startPointY)),
-                   cv::Point(int(linesInRight[lineIDRight][0].endPointX), int(linesInRight[lineIDRight][0].endPointY)),
-                    CV_RGB(r,g,b),2, cv::LINE_AA);
-     }
-
-
-
-     cv::Mat temp;
-
-     m= 0; n=wdh+offsets/2;
-     cv::resize(Ia,temp,cv::Size(size,sz));
-     temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
-
-     m = size; n=wdh+offsets/2;
-     cv::resize(IK,temp,cv::Size(size,sz));
-     temp.copyTo(DispImage(cv::Rect(m, n, size, sz)));
-
-     temp.release();
-
-    cv::namedWindow( title );
-    cv::imshow( title,DispImage);
+  cv::namedWindow(title);
+  cv::imshow(title, DispImage);
 
   cv::waitKey(waittime);
-
-
-
 }
 
-void dispNav::setpseudocolour(int maxcolor){
+void dispNav::setpseudocolour(int maxcolor)
+{
 
-     int bpc = 8;
-     int tb = 3*bpc;
-     int tc = maxcolor;
+  int bpc = 8;
+  int tb = 3 * bpc;
+  int tc = maxcolor;
 
-     int r = 0;
-     int g = 0;
-     int b = 0;
-     pcol.clear();
-     for(long int i=0;i<tc;i++)
-     {
-       r = 0;
-       g = 0;
-       b = 0;
-       for(int k= 0; k<tb;){
-           b = (b << 1) + ((i >> k++) & 1);
-           g = (g << 1) + ((i >> k++) & 1);
-           r = (r << 1) + ((i >> k++) & 1);
-       }
-       r = r << (8 - bpc);
-       g = g << (8 - bpc);
-       b = b << (8 - bpc);
+  int r = 0;
+  int g = 0;
+  int b = 0;
+  pcol.clear();
+  for (long int i = 0; i < tc; i++)
+  {
+    r = 0;
+    g = 0;
+    b = 0;
+    for (int k = 0; k < tb;)
+    {
+      b = (b << 1) + ((i >> k++) & 1);
+      g = (g << 1) + ((i >> k++) & 1);
+      r = (r << 1) + ((i >> k++) & 1);
+    }
+    r = r << (8 - bpc);
+    g = g << (8 - bpc);
+    b = b << (8 - bpc);
 
-       std::vector<int> cl;
+    std::vector<int> cl;
 
-       cl.push_back(r);
-       cl.push_back(g);
-       cl.push_back(b);
-      /* cl[0] = r;
+    cl.push_back(r);
+    cl.push_back(g);
+    cl.push_back(b);
+    /* cl[0] = r;
        cl[1] = g;
        cl[2] = 3;*/
-      //pcol.push_back({r,g,b});
-       pcol.push_back(cl);
-     }
-
- }
-
+    //pcol.push_back({r,g,b});
+    pcol.push_back(cl);
+  }
+}
 
 void dispNav::closedisp()
 {
