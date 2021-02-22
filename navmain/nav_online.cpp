@@ -20,6 +20,7 @@ double base_forward_velocity;
 double max_turning_speed;
 double turning_slow_factor;
 double turning_threshold;
+double image_ratio;
 
 bool initialised = false;
 int image_count = 0;
@@ -103,11 +104,12 @@ int main(int argc, char** argv)
 	n.param("max_turning_speed", max_turning_speed, 0.3);
 	n.param("turning_slow_factor", turning_slow_factor, 0.3);
 	n.param("turning_threshold", turning_threshold, 0.08);
-	double K11 = n.param("K11", 296.3437428191);
-	double K13 = n.param("K13", 158.2733787287);
-	double K22 = n.param("K22", 296.6441607237);
-	double K23 = n.param("K23", 118.0622191474);
-	image_size = cv::Size(n.param("image_width",320), n.param("image_height",240));
+	n.param("image_ratio", image_ratio, 1.0);
+	double K11 = n.param("K11", 296.3437428191) * image_ratio;
+	double K13 = n.param("K13", 158.2733787287) * image_ratio;
+	double K22 = n.param("K22", 296.6441607237) * image_ratio;
+	double K23 = n.param("K23", 118.0622191474) * image_ratio;
+	image_size = cv::Size(n.param("image_width",320) * image_ratio, n.param("image_height",240) * image_ratio);
 
 	/* Read teach reference images */
 	teachRunImages = kimRead(argv[1]);

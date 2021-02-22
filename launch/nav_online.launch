@@ -17,6 +17,7 @@
 
 		<rosparam param="image_width">752</rosparam>
 		<rosparam param="image_height">480</rosparam>
+		<rosparam param="image_ratio">1</rosparam>
 
 		<remap from="navigation_online/image" to="ros_indigosdk_occam/image0" />
 	</node>
