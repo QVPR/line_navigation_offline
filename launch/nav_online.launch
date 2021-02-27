@@ -4,7 +4,7 @@
 
 	<!-- Load image files for matching -->
 	<!-- node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen" launch-prefix="gdb -ex run -args" -->
-	<node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen" launch-prefix="gdb -ex run -args">
+	<node pkg="line_navigation_ros" type="navigation_online" name="navigation_online" args="$(arg teach_dir)" output="screen">
 		<rosparam param="base_forward_velocity">0.35</rosparam>
 		<rosparam param="max_turning_speed">0.93</rosparam>
 		<rosparam param="turning_slow_factor">0.3</rosparam>

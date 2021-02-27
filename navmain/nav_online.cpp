@@ -10,6 +10,8 @@
 #include "cv_bridge/cv_bridge.h"
 #include "image_transport/image_transport.h"
 
+#include <time.h>
+
 ros::Publisher twistPub;
 
 navigation nav;
@@ -30,6 +32,7 @@ cv::Size image_size;
 
 void imageCallback(const sensor_msgs::Image::ConstPtr &msg)
 {
+	clock_t tStart = clock();
 	std::cout << "imageCallback" << std::endl;
 	cv::Mat image_fullsize = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8)->image;
 	cv::Mat image;
@@ -57,7 +60,9 @@ void imageCallback(const sensor_msgs::Image::ConstPtr &msg)
 	}
 
 	std::cout << "nav.step" << std::endl;
+	clock_t navStepStart = clock();
 	int flag = nav.step(image);
+	clock_t navStepEnd = clock();
 
 	if (flag == 0)
 	{
@@ -102,6 +107,10 @@ void imageCallback(const sensor_msgs::Image::ConstPtr &msg)
 	cmd_vel.linear.x = v;
 	cmd_vel.angular.z = w;
 	twistPub.publish(cmd_vel);
+	clock_t tEnd = clock();
+
+	std::cout << "*** total correction time = " << ((double)(tEnd - tStart)/CLOCKS_PER_SEC) << std::endl;
+	std::cout << "*** step time = " << ((double)(navStepEnd - navStepStart)/CLOCKS_PER_SEC) << std::endl;
 }
 
 int main(int argc, char **argv)
